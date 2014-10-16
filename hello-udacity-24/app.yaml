@@ -11,17 +11,24 @@ handlers:
 
 - url: /
   script: main.app
+
+- url: /birthday.*
+  script: birthday.app
   
 - url: /rot13
   script: rot13.app
   
-- url: /signup
-  script: signup.app
-- url: /signup/welcome
+- url: /signup.*
   script: signup.app
   
 - url: /pigs
   script: pigs.app
+
+- url: /fizzbuzz
+  script: fizzbuzz.app
+  
+- url: /shoppinglist
+  script: shoppinglist.app
   
 #- url: /.*
 #  script: notfound.app
@@ -29,3 +36,5 @@ handlers:
 libraries:
 - name: webapp2
   version: "2.5.2"
+- name: jinja2
+  version: latest
