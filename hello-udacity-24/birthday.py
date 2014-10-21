@@ -14,30 +14,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+import os
 import webapp2
-import cgi
+import jinja2
 
-form = """
-<form method="post">
-	What is your birthday?
-	<br>
-	<label>Month<input type="text" name="month" value="%(month)s"></label>
-	<label>Day<input type="text" name="day" value="%(day)s"></label>
-	<label>Year<input type="text" name="year" value="%(year)s"></label>
-	<br>
-	<br>
-	<div style="color: red">%(error)s</div>
-	<br>
-	<input type="submit">
-</form>
-"""
+template_dir = os.path.join(os.path.dirname(__file__), "templates")
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
+                              autoescape = True)
 
-class MainHandler(webapp2.RequestHandler):
+class Handler(webapp2.RequestHandler):
+    def write(self, *a, **kw):
+        self.response.write(*a, **kw)
+    def render_str(self, template, **params):
+        t = jinja_env.get_template(template)
+        return t.render(params)
+    def render(self, template, **kw):
+        self.write(self.render_str(template, **kw))
+
+class MainHandler(Handler):
     def write_form(self, error="", month="", day="", year=""):
-        self.response.write(form % {"error": error,
-        							"month": escape_html(month),
-        							"day": escape_html(day),
-        							"year": escape_html(year)})
+        self.render("birthday.html", error=error,
+        							month=month,
+        							day=day,
+        							year=year)
 
     def get(self):
         self.write_form()
@@ -56,9 +56,9 @@ class MainHandler(webapp2.RequestHandler):
     	else:
     		self.redirect("/birthday/thanks")
 
-class ThanksHandler(webapp2.RequestHandler):
+class ThanksHandler(Handler):
 	def get(self):
-		self.response.write("Thanks, that's a totally valid day")
+		self.write("Thanks, that's a totally valid day")
 
 
 months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -81,9 +81,6 @@ def valid_year(year):
    			year = int(year)
    			if year >= 1990 and year <= 2020:
    				return year
-
-def escape_html(s):
-	return cgi.escape(s, quote = True)
 
 app = webapp2.WSGIApplication([
     ('/birthday', MainHandler),

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}ROT13 Encryptor{% endblock %}
+
+{% block pagename %}<a href="/rot13">rot13</a>{% endblock %}
+
+{% block content %}
+
+<h1>ROT13</h1>
+<form name="rot13form" method="post">
+	<textarea name="text" autofocus="true" rows="12" cols="100" placeholder="Type some text to be encrypted...">{{t}}</textarea>
+	<br>
+	<br>
+	<input type="submit">
+</form>
+
+{% endblock %}

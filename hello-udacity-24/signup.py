@@ -4,33 +4,25 @@
 # 
 #
 
+import os
 import webapp2
+import jinja2
 import cgi
 import re
 
-form = """
-<form method="post">
-	<h1>Signup</h1>
-	<br>
-	<label>Username<input type="text" name="username" value="%(username)s" required></label>
-    <div style="color: red">%(usernameerror)s</div>
-    <br>
-	<label>Password<input type="password" name="password" value="%(password)s" required></label>
-    <div style="color: red">%(passworderror)s</div>
-    <br>
-	<label>Verify Password<input type="password" name="verify" value="%(verify)s" required></label>
-    <div style="color: red">%(verifyerror)s</div>
-    <br>
-    <label>Email (optional) <input type="text" name="email" value="%(email)s"></label>
-    <div style="color: red">%(emailerror)s</div>
-	<br>
-	<br>
-	<br>
-	<input type="submit">
-</form>
-"""
+template_dir = os.path.join(os.path.dirname(__file__), "templates")
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir))
 
-class SignupHandler(webapp2.RequestHandler):
+class Handler(webapp2.RequestHandler):
+    def write(self, *a, **kw):
+        self.response.write(*a, **kw)
+    def render_str(self, template, **params):
+        t = jinja_env.get_template(template)
+        return t.render(params)
+    def render(self, template, **kw):
+        self.write(self.render_str(template, **kw))
+
+class SignupHandler(Handler):
     def get(self):
         self.write_form()
     
@@ -62,20 +54,20 @@ class SignupHandler(webapp2.RequestHandler):
             
         # Redirects the user if input is valid, or indicates the errors if not
         if valid:
-            self.redirect("/welcome?u=%s" % u_username)
+            self.redirect("/signup/welcome?u=%s" % u_username)
         else:
             self.write_form(username=u_username, email=u_email, user_error=user_error, pass_error=pass_error, veri_error=veri_error, email_error=email_error)
     
     
     def write_form(self, username="", password="", verify="", email="", user_error="", pass_error="", veri_error="", email_error=""):
-        self.response.write(form % {"username": username,
-                                    "password": password,
-                                    "verify": verify,
-                                    "email": email,
-                                    "usernameerror": user_error,
-                                    "passworderror": pass_error,
-                                    "verifyerror": veri_error,
-                                    "emailerror": email_error})
+        self.render("signup.html", username=username,
+                                    password=password,
+                                    verify=verify,
+                                    email=email,
+                                    usernameerror=user_error,
+                                    passworderror=pass_error,
+                                    verifyerror=veri_error,
+                                    emailerror=email_error)
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 PASS_RE = re.compile(r"^.{3,20}$")
@@ -103,7 +95,7 @@ def check_email(email):
 
 
 # Welcome message handler
-class WelcomeHandler(webapp2.RequestHandler):
+class WelcomeHandler(Handler):
     welcome_message = """
     <h1>Welcome, %s!</h1>
     """
@@ -111,7 +103,7 @@ class WelcomeHandler(webapp2.RequestHandler):
     def get(self):
         username = self.request.get('u')
         if check_username(username):
-            self.response.write(self.welcome_message % username)
+            self.write(self.welcome_message % username)
         else:
             self.response.redirect("/signup")
 

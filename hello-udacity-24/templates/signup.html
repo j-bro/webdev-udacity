@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Signup{% endblock %}
+
+{% block pagename %}<a href="/signup">signup</a>{% endblock %}
+
+{% block content %}
+
+<form method="post">
+	<br>
+	<label>Username<input type="text" name="username" value="{{username}}" required></label>
+    <div style="color: red">{{usernameerror}}</div>
+    <br>
+	<label>Password<input type="password" name="password" value="{{password}}" required></label>
+    <div style="color: red">{{passworderror}}</div>
+    <br>
+	<label>Verify Password<input type="password" name="verify" value="{{verify}}" required></label>
+    <div style="color: red">{{verifyerror}}</div>
+    <br>
+    <label>Email (optional) <input type="text" name="email" value="{{email}}"></label>
+    <div style="color: red">{{emailerror}}</div>
+	<br>
+	<br>
+	<br>
+	<input type="submit">
+</form>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}/ascii/{% endblock %}
+
+{% block pagename %}<a href="/asciichan">asciichan</a>{% endblock %}
+
+{% block styles %}
+<link href="/styles/asciichan.css" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    <label>
+        <div>Title</div>
+        <input type="text" name="title" value="{{title}}" required>
+    </label>
+    <label>
+        <div>ASCII</div>
+        <textarea name="art" placeholder="Paste some ASCII Art here..." required>{{art}}</textarea>
+    </label>
+    <div class="error" style="color:red">{{error}}</div>
+    <input type="submit">
+
+</form>
+
+<br><hr>
+
+{% for a in arts %}
+    <div class="art">
+        <br>
+        <div class="art-title">{{a.title}}</div>
+        <br>
+        <pre class="art-body">{{a.art}}</pre>
+        <br>
+    </div>
+{% endfor %}
+
+{% endblock %}

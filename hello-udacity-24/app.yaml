@@ -29,6 +29,12 @@ handlers:
   
 - url: /shoppinglist
   script: shoppinglist.app
+
+- url: /asciichan
+  script: asciichan.app
+  
+- url: /styles
+  static_dir: styles
   
 #- url: /.*
 #  script: notfound.app

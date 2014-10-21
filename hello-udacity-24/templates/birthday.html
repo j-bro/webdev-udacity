@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Birthday Form{% endblock %}
+
+{% block pagename %}<a href="/birthday">birthday</a>{% endblock %}
+
+
+{% block content %}
+<br>
+<form method="post">
+	What is your birthday?
+	<br>
+	<label>Month<input type="text" name="month" value="{{month}}"></label>
+	<label>Day<input type="text" name="day" value="{{day}}"></label>
+	<label>Year<input type="text" name="year" value="{{year}}"></label>
+	<br>
+	<br>
+	<div style="color: red">{{error}}</div>
+	<br>
+	<input type="submit">
+</form>
+{% endblock %}

@@ -8,27 +8,32 @@
 
 import webapp2
 import cgi
+import os
+import jinja2
 
-html = """
-<h1>ROT13</h1>
-<form name="rot13form" method="post">
-	<textarea name="text" autofocus="true" rows="12" cols="100" placeholder="Type some text to be encrypted...">%(t)s</textarea>
-	<br>
-	<br>
-	<input type="submit">
-</form>
-"""
+template_dir = os.path.join(os.path.dirname(__file__), "templates")
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
+                              autoescape = True)
 
-class ROTHandler(webapp2.RequestHandler):
+class Handler(webapp2.RequestHandler):
+    def write(self, *a, **kw):
+        self.response.write(*a, **kw)
+    def render_str(self, template, **params):
+        t = jinja_env.get_template(template)
+        return t.render(params)
+    def render(self, template, **kw):
+        self.write(self.render_str(template, **kw))
+
+class ROTHandler(Handler):
     def fill_form(self, t=""):
-        self.response.write(html % {"t": t})
+        self.render("rot13.html",t=t)
     
     def get(self):
         self.fill_form()
     def post(self):
         user_input = self.request.get('text')
         encrypted_text = encrypt(user_input)
-        self.fill_form(cgi.escape(encrypted_text))
+        self.fill_form(encrypted_text)
 
 def encrypt(s):
     lowers = "abcdefghijklmnopqrstuvwxyz"

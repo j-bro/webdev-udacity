@@ -6,12 +6,12 @@
             {% endblock %}
         </title>
     </head>
+    {% block styles %}{% endblock %}
     
     <body style="margin: 0">
-        <h1 style = "background-color: #ddd; color: #888; margin: 0; height: 50px">
-            Udacity course exercises
+        <h1 style = "background-color: #ddd; color: #888; margin: 0; padding: 10px; height: 50px; text-decoration: none">
+            <a href="/">Udacity Web Development exercises</a> / {% block pagename %}{% endblock %}
         </h1>
-        
         {% block content %}
         {% endblock %}
     </body>
